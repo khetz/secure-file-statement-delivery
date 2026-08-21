@@ -2,7 +2,7 @@
 
 public class DownloadToken
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public int CustomerId { get; set; }
     public int StatementId { get; set; }
     public required string TokenString { get; set; }
