@@ -3,8 +3,8 @@
 public class DownloadToken
 {
     public Guid Id { get; set; }
-    public int CustomerId { get; set; }
-    public int StatementId { get; set; }
+    public Guid CustomerId { get; set; }
+    public Guid StatementId { get; set; }
     public required string TokenString { get; set; }
     public DateTimeOffset CreationTime { get; set; }
     public DateTimeOffset ExpirationTime { get; set; }
