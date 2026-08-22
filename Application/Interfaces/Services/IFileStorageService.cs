@@ -3,7 +3,7 @@
 public interface IFileStorageService
 {
     Task<string> StoreAsync(Stream fileContent, string fileName);
-    Task<Stream> RetrieveAsync(string storagePath);
+    Task<Stream> RetrieveAsync(string fileName);
     Task<bool> DeleteAsync(string storagePath);
     Task<bool> ExistsAsync(string storagePath);
 }

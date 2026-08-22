@@ -27,9 +27,19 @@ public class FileStorageService : IFileStorageService
         throw new NotImplementedException();
     }
 
-    public Task<Stream> RetrieveAsync(string storagePath)
+    public async Task<Stream> RetrieveAsync(string fileName)
     {
-        throw new NotImplementedException();
+        var fullFilePath = Path.Combine(_basePath, fileName);
+        VerifyFilePath(fullFilePath);
+        var fileExists = File.Exists(fullFilePath);
+
+        if (!fileExists) throw new FileNotFoundException($"File with name {fileName} was not found");
+
+        return new FileStream(
+            fullFilePath,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read);
     }
 
     public async Task<string> StoreAsync(Stream fileContent, string fileName)
@@ -40,7 +50,11 @@ public class FileStorageService : IFileStorageService
 
         VerifyFilePath(fullFilePath);
 
-        await using var fileStream = File.Create(fullFilePath);
+        await using var fileStream = new FileStream(
+            fullFilePath,
+            FileMode.Create,
+            FileAccess.Write);
+
         await fileContent.CopyToAsync(fileStream);
         return uniqueFileName;
     }
