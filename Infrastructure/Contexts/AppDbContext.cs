@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Contexts;
@@ -26,5 +27,6 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<DownloadToken>()
             .HasIndex(dt => dt.ExpirationTime);
 
+        modelBuilder.AddCustomerSeedData();
     }
 }

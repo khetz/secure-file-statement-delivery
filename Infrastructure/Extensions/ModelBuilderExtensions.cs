@@ -7,7 +7,7 @@ namespace Infrastructure.Extensions;
 
 public static class ModelBuilderExtensions
 {
-    public static ModelBuilder AddSeedData(this ModelBuilder modelBuilder)
+    public static ModelBuilder AddCustomerSeedData(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Customer>().HasData(
             new Customer
