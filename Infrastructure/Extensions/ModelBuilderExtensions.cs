@@ -15,14 +15,18 @@ public static class ModelBuilderExtensions
                 Id = Guid.Parse("a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d"),
                 FullName = "Vukheta Maluleke",
                 Email = "vukheta@gmail.com",
-                PasswordHash = ComputeHash("Password123")
+                PasswordHash = ComputeHash("Password123"),
+                AccountNumber = 100,
+                Active = true
             },
             new Customer
             {
                 Id = Guid.Parse("f9e8d7c6-b5a4-3f2e-1d0c-9b8a7f6e5d4c"),
                 FullName = "Seeded User",
                 Email = "seeded@gmail.com",
-                PasswordHash = ComputeHash("Password456")
+                PasswordHash = ComputeHash("Password456"),
+                AccountNumber = 150,
+                Active = true
             });
 
         return modelBuilder;
