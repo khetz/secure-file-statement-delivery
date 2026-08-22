@@ -17,24 +17,30 @@ public class FileStorageService : IFileStorageService
         Directory.CreateDirectory(_basePath);
     }
 
-    public Task<bool> DeleteAsync(string storagePath)
+    public async Task<bool> DeleteAsync(string storagePath)
     {
-        throw new NotImplementedException();
+        var fullFilePath = VerifyFilePath(storagePath);
+        var fileExists = File.Exists(fullFilePath);
+
+        if (!fileExists) return false;
+
+        File.Delete(fullFilePath);
+
+        return true;
     }
 
-    public Task<bool> ExistsAsync(string storagePath)
+    public async Task<bool> ExistsAsync(string storagePath)
     {
-        throw new NotImplementedException();
+        var fullFilePath = VerifyFilePath(storagePath);
+        return await Task.FromResult(File.Exists(fullFilePath));
     }
 
     public async Task<Stream> RetrieveAsync(string storagePath)
     {
-        var sanitisedFileName = Path.GetFileName(storagePath);
-        var fullFilePath = Path.Combine(_basePath, storagePath);
-        VerifyFilePath(fullFilePath);
+        var fullFilePath = VerifyFilePath(storagePath);
         var fileExists = File.Exists(fullFilePath);
 
-        if (!fileExists) throw new FileNotFoundException($"File with name {sanitisedFileName} was not found");
+        if (!fileExists) throw new FileNotFoundException($"File with storage path {storagePath} was not found");
 
         return new FileStream(
             fullFilePath,
@@ -47,9 +53,8 @@ public class FileStorageService : IFileStorageService
     {
         var sanitisedFileName = Path.GetFileName(storagePath);
         var uniqueFileName = $"{Guid.NewGuid()}_{sanitisedFileName}";
-        var fullFilePath = Path.Combine(_basePath, uniqueFileName);
 
-        VerifyFilePath(fullFilePath);
+        var fullFilePath = VerifyFilePath(storagePath + uniqueFileName);
 
         await using var fileStream = new FileStream(
             fullFilePath,
@@ -60,11 +65,13 @@ public class FileStorageService : IFileStorageService
         return uniqueFileName;
     }
 
-    private void VerifyFilePath(string filePath)
+    private string VerifyFilePath(string storagePath)
     {
-        var fullInputPath = Path.GetFullPath(filePath);
-        var valid = fullInputPath.StartsWith(_basePath);
+        var fullFilePath = Path.Combine(_basePath, storagePath);
+        var valid = fullFilePath.StartsWith(_basePath);
 
         if (!valid) throw new Exception("Invalid file path specified");
+
+        return fullFilePath;
     }
 }
