@@ -32,8 +32,24 @@ public class FileStorageService : IFileStorageService
         throw new NotImplementedException();
     }
 
-    public Task<string> StoreAsync(Stream fileContent, string storagePath)
+    public async Task<string> StoreAsync(Stream fileContent, string fileName)
     {
-        throw new NotImplementedException();
+        var sanitisedFileName = Path.GetFileName(fileName);
+        var uniqueFileName = $"{Guid.NewGuid()}_{sanitisedFileName}";
+        var fullFilePath = Path.Combine(_basePath, uniqueFileName);
+
+        VerifyFilePath(fullFilePath);
+
+        await using var fileStream = File.Create(fullFilePath);
+        await fileContent.CopyToAsync(fileStream);
+        return uniqueFileName;
+    }
+
+    private void VerifyFilePath(string filePath)
+    {
+        var fullInputPath = Path.GetFullPath(filePath);
+        var valid = fullInputPath.StartsWith(_basePath);
+
+        if (!valid) throw new Exception("Invalid file path specified");
     }
 }
