@@ -12,12 +12,14 @@ public static class ModelBuilderExtensions
         modelBuilder.Entity<Customer>().HasData(
             new Customer
             {
+                Id = Guid.Parse("a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d"),
                 FullName = "Vukheta Maluleke",
                 Email = "vukheta@gmail.com",
                 PasswordHash = ComputeHash("Password123")
             },
             new Customer
             {
+                Id = Guid.Parse("f9e8d7c6-b5a4-3f2e-1d0c-9b8a7f6e5d4c"),
                 FullName = "Seeded User",
                 Email = "seeded@gmail.com",
                 PasswordHash = ComputeHash("Password456")
