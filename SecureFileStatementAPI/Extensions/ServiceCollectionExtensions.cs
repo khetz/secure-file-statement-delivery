@@ -1,9 +1,9 @@
-﻿using Infrastructure.Contexts;
+﻿using Application.Helpers;
+using Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SecureFileStatementAPI.Configuration;
-using SecureFileStatementAPI.Helpers;
 
 namespace SecureFileStatementAPI.Extensions;
 
