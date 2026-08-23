@@ -1,4 +1,4 @@
-﻿namespace SecureFileStatementAPI.Configuration;
+﻿namespace Application.Configuration;
 
 public class JwtAuthenticationConfig
 {
