@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace SecureFileStatementAPI.Helpers;
+namespace Application.Helpers;
 
 public static class JwtHelper
 {
