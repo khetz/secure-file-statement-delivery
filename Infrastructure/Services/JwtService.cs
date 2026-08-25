@@ -18,7 +18,7 @@ public class JwtService : IJwtService
         _jwtAuthenticationConfig = jwtAuthenticationConfig.Value;
     }
 
-    public string GenerateToken(Customer customer)
+    public (string, DateTimeOffset) GenerateToken(Customer customer)
     {
         var claims = new[]
         {
@@ -38,6 +38,6 @@ public class JwtService : IJwtService
             signingCredentials: credentials
         );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return (new JwtSecurityTokenHandler().WriteToken(token), new DateTimeOffset(token.ValidTo, TimeSpan.Zero));
     }
 }
