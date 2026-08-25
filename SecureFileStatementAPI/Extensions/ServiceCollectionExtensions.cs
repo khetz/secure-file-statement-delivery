@@ -1,8 +1,10 @@
 ﻿using Application.Configuration;
 using Application.Helpers;
 using Application.Interfaces.Repositories;
+using Application.Interfaces.Services;
 using Infrastructure.Contexts;
 using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -57,6 +59,13 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IPasswordService, PasswordService>();
 
         return services;
     }
