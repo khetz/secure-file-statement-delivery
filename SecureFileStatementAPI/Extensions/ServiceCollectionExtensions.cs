@@ -1,6 +1,8 @@
 ﻿using Application.Configuration;
 using Application.Helpers;
+using Application.Interfaces.Repositories;
 using Infrastructure.Contexts;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -48,6 +50,13 @@ public static class ServiceCollectionExtensions
                     IssuerSigningKey = JwtHelper.GetSigningKey(jwtSettings.Secret)
                 };
             });
+
+        return services;
+    }
+
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
 
         return services;
     }
