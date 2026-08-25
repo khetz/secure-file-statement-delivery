@@ -13,6 +13,10 @@ builder.Services
     .AddRepositories()
     .AddJWTAuthentication(builder.Configuration);
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwagger();
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 app.MapEndpoints();

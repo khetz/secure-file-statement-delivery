@@ -34,7 +34,6 @@ public static class ModelBuilderExtensions
 
     private static string ComputeHash(string input)
     {
-        byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
-        return Convert.ToHexString(bytes).ToLower();
+        return BCrypt.Net.BCrypt.HashPassword(input);
     }
 }
