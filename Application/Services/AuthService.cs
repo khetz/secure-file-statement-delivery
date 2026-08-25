@@ -24,10 +24,10 @@ public class AuthService : IAuthService
         var customer = await _customerRepository.GetByEmailAsync(loginRequest.Email);
 
         if (customer == null)
-            return Error.NotFound(code: "Customer.NotFound", description: "The specified email does not have an account with us.");
+            return Error.Unauthorized(description: "Invalid credentials");
 
         if (!_passwordService.VerifyPassword(customer.PasswordHash, loginRequest.Password))
-            return Error.Unauthorized(code: "Customer.Unauthorized", description: "Customer details are incorrect.");
+            return Error.Unauthorized(description: "Invalid credentials");
 
         var (accessToken, expiry) = _jwtService.GenerateToken(customer);
 
