@@ -11,6 +11,7 @@ builder.Services
     .BindConfig<JwtAuthenticationConfig>(builder.Configuration, JwtAuthenticationConfig.JwtAuthenticationSectionName)
     .AddDatabase()
     .AddRepositories()
+    .AddServices()
     .AddJWTAuthentication(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
