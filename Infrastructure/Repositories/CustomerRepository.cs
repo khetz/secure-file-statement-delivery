@@ -18,4 +18,14 @@ public class CustomerRepository : ICustomerRepository
     {
         return await _appDbContext.Customers.FirstOrDefaultAsync(c => c.Email == email);
     }
+
+    public async Task<bool> ExistsAsync(string email)
+    {
+        return await _appDbContext.Customers.AnyAsync(c => c.Email == email);
+    }
+
+    public async Task AddAsync(Customer customer)
+    {
+        await _appDbContext.Customers.AddAsync(customer);
+    }
 }
