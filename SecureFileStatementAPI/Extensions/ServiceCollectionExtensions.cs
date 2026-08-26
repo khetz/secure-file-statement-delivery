@@ -6,6 +6,7 @@ using Application.Services;
 using Infrastructure.Contexts;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -61,6 +62,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<IStatementRepository, StatementRepository>();
 
         return services;
     }
@@ -70,6 +72,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPasswordService, PasswordService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IFileStorageService, FileStorageService>();
+        services.AddScoped<IStatementService, StatementService>();
 
         return services;
     }
