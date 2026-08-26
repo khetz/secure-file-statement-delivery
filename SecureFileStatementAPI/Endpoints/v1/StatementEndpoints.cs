@@ -12,9 +12,10 @@ public static class StatementEndpoints
 {
     public static void MapStatementEndpoints(this RouteGroupBuilder group)
     {
-        var statementsGroup = group.MapGroup("statements");
+        var statementsGroup = group.MapGroup("statements").RequireAuthorization();
 
         statementsGroup.MapPost("", UploadHandlerAsync);
+        statementsGroup.MapGet("", ListStatementsHandlerAsync);
     }
 
     private static async Task<Results<Created<StatementResponse>, BadRequest<string>, NotFound>> UploadHandlerAsync([FromForm] string period,
@@ -36,5 +37,16 @@ public static class StatementEndpoints
         }
 
         return TypedResults.Created((string?)null, result.Value);   
+    }
+
+    private static async Task<Results<Ok<List<StatementResponse>>, UnauthorizedHttpResult>> ListStatementsHandlerAsync(ClaimsPrincipal customer,
+        [FromServices] IStatementService statementService)
+    {
+        var customerId = customer.GetCustomerId();
+        if (customerId == null) return TypedResults.Unauthorized();
+
+        var result = await statementService.GetStatementsByCustomerIdAsync((Guid)customerId);
+
+        return TypedResults.Ok(result.Value.ToList());
     }
 }

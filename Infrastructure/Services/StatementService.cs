@@ -3,6 +3,7 @@ using Application.Interfaces.Services;
 using Application.Responses;
 using Domain.Entities;
 using ErrorOr;
+using Infrastructure.Mappers;
 using Microsoft.AspNetCore.Http;
 using System.Security.Cryptography;
 
@@ -58,7 +59,15 @@ public class StatementService : IStatementService
             ContentHash = hexHash
         };
     }
+    
+    public async Task<ErrorOr<IReadOnlyCollection<StatementResponse>>> GetStatementsByCustomerIdAsync(Guid customerId)
+    {
+        var statements = await _statementRepository.GetByCustomerIdAsync(customerId);
 
+        return statements.Select(s => s.ToStatementResponse()).ToList();
+    }
+
+    #region private functions
     private static bool IsPdf(IFormFile file)
     {
         if (file == null || file.Length < 4)
@@ -85,4 +94,5 @@ public class StatementService : IStatementService
 
         return Convert.ToHexString(fileHash);
     }
+    #endregion
 }
