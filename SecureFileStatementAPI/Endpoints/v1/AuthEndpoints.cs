@@ -39,9 +39,9 @@ namespace SecureFileStatementAPI.Endpoints.v1
                 {
                     ErrorType.Conflict => TypedResults.Conflict(),
                     _ => TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                { "error", new[] { error.Description } }
-            })
+                    {
+                        { "error", new[] { error.Description } }
+                    })
                 };
             }
 
