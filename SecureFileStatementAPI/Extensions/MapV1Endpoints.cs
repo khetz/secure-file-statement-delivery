@@ -9,6 +9,7 @@ namespace SecureFileStatementAPI.Extensions
             var v1Group = app.MapGroup("api/v1");
 
             v1Group.MapAuthEndpoints();
+            v1Group.MapStatementEndpoints();
         }
     }
 }
