@@ -13,9 +13,10 @@ public class StatementRepository : IStatementRepository
         _appDbContext = appDbContext;
     }
 
-    public async Task AddAsync(Statement statement)
+    public async Task<Guid> AddAsync(Statement statement)
     {
         await _appDbContext.AddAsync(statement);
         await _appDbContext.SaveChangesAsync();
+        return statement.Id;
     }
 }
