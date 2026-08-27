@@ -3,6 +3,7 @@ using Application.Helpers;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Services;
+using Infrastructure.Configuration;
 using Infrastructure.Contexts;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -21,6 +22,15 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration, string sectionName) where T : class
     {
         services.Configure<T>(configuration.GetSection(sectionName));
+        return services;
+    }
+
+    public static IServiceCollection BindAllConfigs(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.BindConfig<DataBaseConfig>(configuration, DataBaseConfig.DatabaseSectionName);
+        services.BindConfig<FileStorageConfig>(configuration, FileStorageConfig.StorageSectionName);
+        services.BindConfig<JwtAuthenticationConfig>(configuration, JwtAuthenticationConfig.JwtAuthenticationSectionName);
+
         return services;
     }
 
