@@ -67,6 +67,12 @@ public class StatementService : IStatementService
         return statements.Select(s => s.ToStatementResponse()).ToList();
     }
 
+    public async Task<ErrorOr<bool>> CheckIfStatementExistsAsync(Guid statementId)
+    {
+        var statement = await _statementRepository.GetByIdAsync(statementId);
+        return statement == null;
+    }
+
     #region private functions
     private static bool IsPdf(IFormFile file)
     {
