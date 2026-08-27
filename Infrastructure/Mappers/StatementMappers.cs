@@ -14,4 +14,15 @@ public static class StatementMappers
         UploadDate = statement.UploadTimestamp,
         ContentHash = statement.ContentHash
     };
+
+    public static StatementWithCustomerIdResponse ToStatementWithCustomerIdResponse(this Statement statement) => new()
+    {
+        Id = statement.Id,
+        FileName = statement.FileName,
+        Period = statement.PeriodCovered,
+        FileSize = statement.FileSize,
+        UploadDate = statement.UploadTimestamp,
+        ContentHash = statement.ContentHash,
+        CustomerId = statement.CustomerId
+    };
 }
