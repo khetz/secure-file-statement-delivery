@@ -27,7 +27,7 @@ public class StatementRepository : IStatementRepository
         return await statements.ToListAsync();
     }
 
-    public async Task<Statement?> GetByIsAsync(Guid statementId)
+    public async Task<Statement?> GetByIdAsync(Guid statementId)
     {
         return await _appDbContext.Statement.FirstOrDefaultAsync(s => s.Id == statementId);
     }
