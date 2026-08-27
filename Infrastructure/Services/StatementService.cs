@@ -67,10 +67,10 @@ public class StatementService : IStatementService
         return statements.Select(s => s.ToStatementResponse()).ToList();
     }
 
-    public async Task<ErrorOr<bool>> CheckIfStatementExistsAsync(Guid statementId)
+    public async Task<ErrorOr<StatementResponse?>> GetStatementByIdAsync(Guid statementId)
     {
         var statement = await _statementRepository.GetByIdAsync(statementId);
-        return statement == null;
+        return statement?.ToStatementResponse();
     }
 
     #region private functions
