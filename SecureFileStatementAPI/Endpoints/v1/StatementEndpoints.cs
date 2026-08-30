@@ -16,7 +16,7 @@ public static class StatementEndpoints
 
         statementsGroup.MapPost("", UploadHandlerAsync);
         statementsGroup.MapGet("", ListStatementsHandlerAsync);
-        statementsGroup.MapGet("download", DownloadHandlerAsync);
+        statementsGroup.MapGet("download", DownloadHandlerAsync).AllowAnonymous();
     }
 
     private static async Task<Results<Created<StatementResponse>, BadRequest<string>, NotFound>> UploadHandlerAsync([FromForm] string period,
