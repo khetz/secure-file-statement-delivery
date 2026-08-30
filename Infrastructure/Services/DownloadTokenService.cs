@@ -23,6 +23,7 @@ public class DownloadTokenService : IDownloadTokenService
         _statementService = statementService;
         _downloadTokenConfig = downloadTokenConfig.Value;
         _auditLogRepository = auditLogRepository;
+        _downloadTokenRepository = downloadTokenRepository;
     }
 
     public async Task<ErrorOr<DownloadLinkResponse>> GenerateAsync(Guid statementId, Guid customerId, string ipAddress)
