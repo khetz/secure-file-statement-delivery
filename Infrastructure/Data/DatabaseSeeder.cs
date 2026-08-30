@@ -24,8 +24,8 @@ public class DatabaseSeeder
         var customer1 = new Customer
         {
             Id = Guid.NewGuid(),
-            Email = "john.doe@example.com",
-            FullName = "John Doe",
+            Email = "vukheta99@gmail.com",
+            FullName = "Vukheta Maluleke",
             AccountNumber = 12,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("Password123!"),
             Active = true
