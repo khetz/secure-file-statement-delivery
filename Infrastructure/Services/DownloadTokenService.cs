@@ -37,6 +37,7 @@ public class DownloadTokenService : IDownloadTokenService
         var expiryTimestamp = DateTimeOffset.UtcNow.AddMinutes(_downloadTokenConfig.ExpiryMinutes);
         var tokenPayload = $"{statementId}|{customerId}|{expiryTimestamp.ToString("o")}";
 
+        if (String.IsNullOrEmpty(_downloadTokenConfig.SigningKey)) throw new InvalidOperationException();
         var token = BuildToken(tokenPayload, _downloadTokenConfig.SigningKey);
 
         var downloadToken = new DownloadToken()
@@ -63,7 +64,7 @@ public class DownloadTokenService : IDownloadTokenService
 
         return new DownloadLinkResponse()
         {
-            DownloadUrl = $"{_downloadTokenConfig.BaseUrl}/api/v1/statements/download",
+            DownloadUrl = $"{_downloadTokenConfig.BaseUrl}/api/v1/statements/download?token={token}",
             Expiry = expiryTimestamp
         };
     }
