@@ -54,7 +54,7 @@ public class FileStorageService : IFileStorageService
         var sanitisedFileName = Path.GetFileName(storagePath);
         var uniqueFileName = $"{Guid.NewGuid()}_{sanitisedFileName}";
 
-        var fullFilePath = VerifyFilePath(storagePath + uniqueFileName);
+        var fullFilePath = VerifyFilePath(uniqueFileName);
 
         await using var fileStream = new FileStream(
             fullFilePath,
