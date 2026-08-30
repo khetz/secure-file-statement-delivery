@@ -88,6 +88,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IFileStorageService, FileStorageService>();
         services.AddScoped<IStatementService, StatementService>();
+        services.AddScoped<IDownloadTokenService, DownloadTokenService>();
 
         return services;
     }

@@ -62,7 +62,7 @@ public class DownloadTokenService : IDownloadTokenService
 
         return new DownloadLinkResponse()
         {
-            DownloadUrl = $"{_downloadTokenConfig.BaseUrl}",
+            DownloadUrl = $"{_downloadTokenConfig.BaseUrl}/api/v1/statements/download",
             Expiry = expiryTimestamp
         };
     }
