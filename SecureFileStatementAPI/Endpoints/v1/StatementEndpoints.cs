@@ -18,6 +18,7 @@ public static class StatementEndpoints
         statementsGroup.MapGet("", ListStatementsHandlerAsync);
         statementsGroup.MapGet("download", DownloadHandlerAsync)
             .AllowAnonymous().RequireRateLimiting("download-policy");
+        statementsGroup.MapPost("{statementId}/download-link", GenerateLinkHandlerAsync);
     }
 
     private static async Task<Results<Created<StatementResponse>, BadRequest<string>, NotFound>> UploadHandlerAsync([FromForm] string period,
@@ -50,6 +51,29 @@ public static class StatementEndpoints
         var result = await statementService.GetStatementsByCustomerIdAsync((Guid)customerId);
 
         return TypedResults.Ok(result.Value.ToList());
+    }
+
+    private static async Task<Results<Ok<DownloadLinkResponse>, NotFound, ForbidHttpResult, UnauthorizedHttpResult>> GenerateLinkHandlerAsync(ClaimsPrincipal customer,
+        HttpContext context,[FromServices] IDownloadTokenService downloadTokenService, [FromRoute] Guid statementId)
+    {
+        var customerId = customer.GetCustomerId();
+        if (customerId == null) return TypedResults.Unauthorized();
+
+        var ipAddress = context.Connection.RemoteIpAddress?.ToString() ?? "";
+        var result = await downloadTokenService.GenerateAsync(statementId, (Guid)customerId, ipAddress);
+
+        if (result.IsError)
+        {
+            var error = result.FirstError;
+            return error.Type switch
+            {
+                ErrorType.Forbidden => TypedResults.Forbid(),
+                ErrorType.NotFound => TypedResults.NotFound(),
+                _ => TypedResults.Unauthorized()
+            };
+        }
+
+        return TypedResults.Ok(result.Value);
     }
 
     private static async Task<Results<FileStreamHttpResult, UnauthorizedHttpResult, NotFound>> DownloadHandlerAsync
