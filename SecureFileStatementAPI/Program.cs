@@ -1,4 +1,5 @@
 using SecureFileStatementAPI.Extensions;
+using SecureStatementDelivery.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,5 +30,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+await app.SeedDatabaseAsync();
 app.Run();
 
