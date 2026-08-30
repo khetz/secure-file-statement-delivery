@@ -8,11 +8,15 @@ using Infrastructure.Contexts;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Storage;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using SecureFileStatementAPI.Configuration;
+using System.Net;
+using System.Security.Claims;
+using System.Threading.RateLimiting;
 
 namespace SecureFileStatementAPI.Extensions;
 
@@ -108,5 +112,52 @@ public static class ServiceCollectionExtensions
         });
 
         return services;
+    }
+
+    public static IServiceCollection AddRateLimiting(this IServiceCollection services)
+    {
+        return services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.AddLinkGenerationPolicy();
+            options.AddDownloadPolicy();
+        });
+    }
+
+    private static void AddLinkGenerationPolicy(this RateLimiterOptions options)
+    {
+        options.AddPolicy("link-generation-policy", httpContext =>
+        {
+            string customerId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                            ?? "anonymous";
+
+            return RateLimitPartition.GetFixedWindowLimiter(
+                partitionKey: customerId,
+                factory: _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 10,                       
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueLimit = 0
+                });
+        });
+    }
+
+    private static void AddDownloadPolicy(this RateLimiterOptions options)
+    {
+        options.AddPolicy("download-policy", httpContext =>
+        {
+            string ipAddress = httpContext.Connection.RemoteIpAddress?.ToString()
+                          ?? IPAddress.Loopback.ToString();
+
+            return RateLimitPartition.GetFixedWindowLimiter(
+                partitionKey: ipAddress,
+                factory: _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 30,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueLimit = 0
+                });
+        });
     }
 }
