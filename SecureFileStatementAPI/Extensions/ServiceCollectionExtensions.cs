@@ -77,6 +77,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IStatementRepository, StatementRepository>();
+        services.AddScoped<IDownloadTokenRepository, DownloadTokenRepository>();
+        services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 
         return services;
     }
