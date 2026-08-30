@@ -55,7 +55,8 @@ public class DownloadTokenService : IDownloadTokenService
         {
             ActionName = "DownloadLinkGenerated",
             Details = $"CustomerId = {customerId}, statementId = {statementId}",
-            IpAddress = ipAddress
+            IpAddress = ipAddress,
+            Time = DateTimeOffset.UtcNow
         };
 
         await _auditLogRepository.AddAsync(auditLog);
