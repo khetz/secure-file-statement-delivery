@@ -67,14 +67,51 @@ public class DownloadTokenService : IDownloadTokenService
         };
     }
 
-    private static string BuildToken(string message, string secretKey)
+    public async Task<ErrorOr<DownloadValidationResponse>> ValidateTokenAsync(string token)
+    {
+        string[] tokenParts = token.Split(".", StringSplitOptions.None);
+        if (tokenParts.Any(string.IsNullOrEmpty)) return Error.Unauthorized("Token not valid");
+
+        var decodedPayload = FromBase64Url(tokenParts[0]);
+        var decodedPayloadHash = HMACSigning(decodedPayload, _downloadTokenConfig.SigningKey);
+
+        var decodedSignature = FromBase64Url(tokenParts[1]);
+        var signaturesEqual = CryptographicOperations.FixedTimeEquals(decodedPayloadHash, decodedSignature);
+
+        if (!signaturesEqual) return Error.Unauthorized("Token not valid");
+
+        var payloadString = Encoding.UTF8.GetString(decodedPayload);
+        var payloadParts = payloadString.Split("|", StringSplitOptions.None);
+
+        if (payloadParts.Any(string.IsNullOrEmpty)) return Error.Unauthorized("Token not valid");
+
+        var expiryTimestamp = DateTimeOffset.Parse(payloadParts[2]);
+
+        if (DateTimeOffset.UtcNow > expiryTimestamp) return Error.Failure("Download link has expired");
+
+        var databaseToken = await _downloadTokenRepository.GetByTokenAsync(token);
+        if (databaseToken == null || databaseToken.Used) return Error.Unauthorized("Invalid or expired token");
+
+        return new DownloadValidationResponse()
+        {
+            CustomerId = Guid.Parse(payloadParts[1]),
+            StatementId = Guid.Parse(payloadParts[0])
+        };
+    }
+
+    #region private helpers
+
+    private static byte[] HMACSigning(byte[] input, string secretKey)
     {
         byte[] keyBytes = Encoding.UTF8.GetBytes(secretKey);
-        byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-
         using var hmac = new HMACSHA256(keyBytes);
+        return hmac.ComputeHash(input);
+    }
 
-        byte[] hashBytes = hmac.ComputeHash(messageBytes);
+    private static string BuildToken(string message, string secretKey)
+    {
+        byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+        byte[] hashBytes = HMACSigning(messageBytes, secretKey);
 
         string payloadBase64 = ToBase64Url(messageBytes);
         string signatureBase64 = ToBase64Url(hashBytes);
@@ -85,4 +122,12 @@ public class DownloadTokenService : IDownloadTokenService
     {
         return Convert.ToBase64String(bytes).Replace("+", "-").Replace("/", "_").TrimEnd('=');
     }
+
+    private byte[] FromBase64Url(string base64Url)
+    {
+        var decodedString = base64Url.Replace("-", "+").Replace("_", "/");
+        switch (decodedString.Length % 4) { case 2: decodedString += "=="; break; case 3: decodedString += "="; break; }
+        return Convert.FromBase64String(decodedString);
+    }
+    #endregion
 }
