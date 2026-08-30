@@ -99,6 +99,14 @@ public class DownloadTokenService : IDownloadTokenService
         };
     }
 
+    public async Task<ErrorOr<bool>> MarkAsUsedAsync(string token)
+    {
+        var markedAsUsed = await _downloadTokenRepository.MarkAsUsedAsync(token);
+        if (!markedAsUsed) return Error.NotFound("Token not found");
+
+        return true;
+    }
+
     #region private helpers
 
     private static byte[] HMACSigning(byte[] input, string secretKey)
