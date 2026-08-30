@@ -1,0 +1,24 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - statements_data:/app/Statements
+      - db_data:/app/Data
+    environment:
+      - Database__DefaultConnection=Data Source=/app/Data/mydatabase.db
+      - JwtAuthentication__Secret=YourJwt-SuperSecret-Key-AtLeast32Characters!
+      - JwtAuthentication__Issuer=SecureStatementDelivery
+      - JwtAuthentication__Audience=SecureStatementDelivery
+      - JwtAuthentication__ExpiryMinutes=60
+      - DownloadToken__SigningKey=YourDownloadToken-SecretKey-AtLeast32Chars!
+      - DownloadToken__ExpiryMinutes=15
+      - DownloadToken__BaseUrl=http://localhost:8080
+      - FileStorage__BasePath=/app/Statements
+
+volumes:
+  statements_data:
+  db_data:
