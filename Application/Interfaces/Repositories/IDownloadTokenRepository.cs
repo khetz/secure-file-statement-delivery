@@ -6,4 +6,5 @@ public interface IDownloadTokenRepository
 {
     Task AddAsync(DownloadToken token);
     Task<DownloadToken?> GetByTokenAsync(string token);
+    Task<bool> MarkAsUsedAsync(string token);
 }

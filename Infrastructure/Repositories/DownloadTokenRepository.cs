@@ -24,4 +24,15 @@ public class DownloadTokenRepository : IDownloadTokenRepository
     {
         return await _appDbContext.DownloadTokens.FirstOrDefaultAsync(t => t.Token == token);
     }
+
+    public async Task<bool> MarkAsUsedAsync(string token)
+    {
+        var downloadToken = await _appDbContext.DownloadTokens.FirstOrDefaultAsync(t => t.Token == token);
+        if (downloadToken == null) return false;
+
+        downloadToken.Used = true;
+        await _appDbContext.SaveChangesAsync();
+
+        return true;
+    }
 }
