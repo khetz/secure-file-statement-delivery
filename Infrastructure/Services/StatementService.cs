@@ -74,8 +74,6 @@ public class StatementService : IStatementService
         return statement?.ToStatementWithCustomerIdResponse();
     }
 
-    public 
-
     #region private functions
     private static bool IsPdf(IFormFile file)
     {
