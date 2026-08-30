@@ -9,5 +9,5 @@ public class Customer
     public required int AccountNumber { get; set; }
     public bool Active { get; set; }
 
-    public IReadOnlyCollection<Statement> Statements { get; set; } = [];
+    public ICollection<Statement> Statements { get; set; } = new List<Statement>();
 }
