@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
         services.BindConfig<DataBaseConfig>(configuration, DataBaseConfig.DatabaseSectionName);
         services.BindConfig<FileStorageConfig>(configuration, FileStorageConfig.StorageSectionName);
         services.BindConfig<JwtAuthenticationConfig>(configuration, JwtAuthenticationConfig.JwtAuthenticationSectionName);
+        services.BindConfig<DownloadTokenConfig>(configuration, DownloadTokenConfig.DowloadTokenSectionName);
 
         return services;
     }
