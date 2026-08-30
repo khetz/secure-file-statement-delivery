@@ -14,7 +14,7 @@ public static class StatementEndpoints
     {
         var statementsGroup = group.MapGroup("statements").RequireAuthorization();
 
-        statementsGroup.MapPost("", UploadHandlerAsync);
+        statementsGroup.MapPost("", UploadHandlerAsync).DisableAntiforgery();
         statementsGroup.MapGet("", ListStatementsHandlerAsync);
         statementsGroup.MapGet("download", DownloadHandlerAsync)
             .AllowAnonymous().RequireRateLimiting("download-policy");
@@ -22,9 +22,9 @@ public static class StatementEndpoints
     }
 
     private static async Task<Results<Created<StatementResponse>, BadRequest<string>, NotFound>> UploadHandlerAsync([FromForm] string period,
-        [FromForm] IFormFile file, ClaimsPrincipal customer, [FromServices] IStatementService statementServive)
+        IFormFile file, HttpContext httpContext, [FromServices] IStatementService statementServive)
     {
-        var customerId = customer.GetCustomerId();
+        var customerId = httpContext.User.GetCustomerId();
         if (customerId == null) return TypedResults.NotFound();
 
         var result = await statementServive.UploadAsync((Guid)customerId, file, period);
