@@ -5,5 +5,5 @@ namespace Application.Interfaces.Services;
 
 public interface IDownloadTokenService
 {
-    Task<ErrorOr<DownloadLinkResponse>> GenerateAsync(Guid statementId, Guid customerId);
+    Task<ErrorOr<DownloadLinkResponse>> GenerateAsync(Guid statementId, Guid customerId, string ipAddress);
 }
