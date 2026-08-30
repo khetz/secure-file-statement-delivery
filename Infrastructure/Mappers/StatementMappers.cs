@@ -12,7 +12,8 @@ public static class StatementMappers
         Period = statement.PeriodCovered,
         FileSize = statement.FileSize,
         UploadDate = statement.UploadTimestamp,
-        ContentHash = statement.ContentHash
+        ContentHash = statement.ContentHash,
+        StoragePath = statement.StoragePath
     };
 
     public static StatementWithCustomerIdResponse ToStatementWithCustomerIdResponse(this Statement statement) => new()

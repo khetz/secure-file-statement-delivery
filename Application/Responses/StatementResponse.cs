@@ -8,4 +8,5 @@ public class StatementResponse
     public long FileSize { get; set; }
     public DateTimeOffset UploadDate { get; set; }
     public required string ContentHash { get; set; }
+    public required string StoragePath { get; set; }
 }

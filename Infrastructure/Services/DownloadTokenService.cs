@@ -87,7 +87,7 @@ public class DownloadTokenService : IDownloadTokenService
 
         var expiryTimestamp = DateTimeOffset.Parse(payloadParts[2]);
 
-        if (DateTimeOffset.UtcNow > expiryTimestamp) return Error.Failure("Download link has expired");
+        if (DateTimeOffset.UtcNow > expiryTimestamp) return Error.Unauthorized("Download link has expired");
 
         var databaseToken = await _downloadTokenRepository.GetByTokenAsync(token);
         if (databaseToken == null || databaseToken.Used) return Error.Unauthorized("Invalid or expired token");
