@@ -56,7 +56,8 @@ public class StatementService : IStatementService
             Period = period,
             FileSize = file.Length,
             UploadDate = statement.UploadTimestamp,
-            ContentHash = hexHash
+            ContentHash = hexHash,
+            StoragePath = storagePath
         };
     }
     
@@ -72,6 +73,8 @@ public class StatementService : IStatementService
         var statement = await _statementRepository.GetByIdAsync(statementId);
         return statement?.ToStatementWithCustomerIdResponse();
     }
+
+    public 
 
     #region private functions
     private static bool IsPdf(IFormFile file)
