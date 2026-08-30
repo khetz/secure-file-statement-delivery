@@ -7,7 +7,8 @@ builder.Services
     .AddDatabase()
     .AddRepositories()
     .AddServices()
-    .AddJWTAuthentication(builder.Configuration);
+    .AddJWTAuthentication(builder.Configuration)
+    .AddRateLimiting();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
@@ -23,6 +24,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseForwardedHeaders();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
