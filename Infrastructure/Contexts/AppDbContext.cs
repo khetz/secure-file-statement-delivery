@@ -26,7 +26,5 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<DownloadToken>()
             .HasIndex(dt => dt.ExpirationTime);
-
-        modelBuilder.AddCustomerSeedData();
     }
 }
