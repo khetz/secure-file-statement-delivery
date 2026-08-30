@@ -24,6 +24,7 @@ public static class StatementMappers
         FileSize = statement.FileSize,
         UploadDate = statement.UploadTimestamp,
         ContentHash = statement.ContentHash,
-        CustomerId = statement.CustomerId
+        CustomerId = statement.CustomerId,
+        StoragePath = statement.StoragePath
     };
 }
