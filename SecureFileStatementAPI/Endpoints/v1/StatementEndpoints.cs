@@ -16,6 +16,7 @@ public static class StatementEndpoints
 
         statementsGroup.MapPost("", UploadHandlerAsync);
         statementsGroup.MapGet("", ListStatementsHandlerAsync);
+        statementsGroup.MapGet("download", DownloadHandlerAsync);
     }
 
     private static async Task<Results<Created<StatementResponse>, BadRequest<string>, NotFound>> UploadHandlerAsync([FromForm] string period,
@@ -49,4 +50,26 @@ public static class StatementEndpoints
 
         return TypedResults.Ok(result.Value.ToList());
     }
+
+    private static async Task<Results<FileStreamHttpResult, UnauthorizedHttpResult, NotFound>> DownloadHandlerAsync
+        ([FromQuery] string token, [FromServices] IDownloadTokenService downloadTokenService, [FromServices] IFileStorageService fileStorageService,
+        [FromServices] IStatementService statementService)
+    {
+        var validToken = await downloadTokenService.ValidateTokenAsync(token);
+        if (validToken.IsError) return TypedResults.Unauthorized();
+
+        var statement = await statementService.GetStatementByIdAsync(validToken.Value.StatementId);
+        if (statement.Value == null) return TypedResults.NotFound();
+
+        var fileOnDisk = await fileStorageService.ExistsAsync(statement.Value.StoragePath);
+        if (!fileOnDisk) return TypedResults.NotFound();
+
+        var fileStream = await fileStorageService.RetrieveAsync(statement.Value.StoragePath);
+        var markedAsUsed = await downloadTokenService.MarkAsUsedAsync(token);
+
+        if (!markedAsUsed.Value) return TypedResults.NotFound();
+
+        return TypedResults.File(fileStream, "application/pdf", statement.Value.FileName);
+    }
+
 }
